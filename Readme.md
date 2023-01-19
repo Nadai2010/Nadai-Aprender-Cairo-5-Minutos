@@ -31,7 +31,10 @@ protostar init
 ---
 
 # Compilar, declarar, implementar e interactuar con contratos de StarkNet
-A los fines de este tutorial, diríjase a este [repositorio de github]() y clone localmente.
+A los fines de este tutorial, diríjase y clone localmente.
+
+* [Repositorio Oficial Inglés Darlington02](https://github.com/Darlington02/CairoLearnXinYminutes)
+* [Repositorio Oficial Español Nadai2010](https://github.com/Nadai2010/Nadai-Aprender-Cairo-5-Minutos) 
 
 Dentro de la carpeta `src` encontrará un contrato repetitivo que viene con la inicialización de un nuevo proyecto Protostar, `main.cairo`. Vamos a compilar, declarar y desplegar este contrato.
 
