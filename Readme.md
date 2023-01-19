@@ -68,7 +68,7 @@ Donde `network` especifica la red en la que estamos implementando, `account` esp
 
 <img src="./cairo_assets/declare1.png" alt="declaring your contract">
 
-## Implementación de contratos
+## Implementación de Contratos
 Después de obtener nuestro hash de clase de la declaración, ahora podemos implementar usando el siguiente comando:
 
 ```
