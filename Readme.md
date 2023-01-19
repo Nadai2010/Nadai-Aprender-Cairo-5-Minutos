@@ -61,7 +61,7 @@ export PROTOSTAR_ACCOUNT_PRIVATE_KEY=[YOUR PRIVATE KEY HERE]
 
 Luego, para declarar nuestro contrato usando Protostar, ejecute el siguiente comando:
 ```
-protostar declare ./build/main.json --network testnet --account 0x0691622bBFD29e835bA4004e7425A4e9630840EbD11c5269DE51C16774585b16 --max-fee auto
+protostar declare ./build/main.json --network testnet --account 0x03F878C94De81906ba1A016aB0E228D361753536681a776ddA29674FfeBB3CB0 --max-fee auto
 ```
 
 Donde `network` especifica la red en la que estamos implementando, `account` especifica la cuenta cuya clave privada estamos usando, `max-fee` especifica la tarifa máxima que se pagará por la transacción. Debería obtener el hash de clase como se ve a continuación:
@@ -72,7 +72,7 @@ Donde `network` especifica la red en la que estamos implementando, `account` esp
 Después de obtener nuestro hash de clase de la declaración, ahora podemos implementar usando el siguiente comando:
 
 ```
-protostar deploy 0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc --network testnet --account 0x0691622bBFD29e835bA4004e7425A4e9630840EbD11c5269DE51C16774585b16 --max-fee auto
+protostar deploy 0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc --network testnet --account 0x03F878C94De81906ba1A016aB0E228D361753536681a776ddA29674FfeBB3CB0 --max-fee auto
 ```
 
 donde `0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc` es el hash de clase de nuestro contrato.
