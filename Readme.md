@@ -48,7 +48,7 @@ protostar build
 
 Y debería obtener un resultado similar al que ve a continuación, con archivos `main.json` y `main_abi.json` creados en la carpeta `build`.
 
-<img src="./cairo_assets/build.png" alt="building your contract">
+<img src="./cairo_assets/build1.png" alt="building your contract">
 
 ## Declaración de contratos
 Con la reciente actualización de StarkNet a 0.10.3, la transacción DEPLOY quedó obsoleta y ya no funciona. Para implementar una transacción, primero debe declarar un contrato para obtener el hash de clase, luego implementar el contrato declarado utilizando el [Contrato de implementación universal](https://community.starknet.io/t/universal-deployer-contract-proposal/1864).
@@ -66,7 +66,7 @@ protostar declare ./build/main.json --network testnet --account 0x03F878C94De819
 
 Donde `network` especifica la red en la que estamos implementando, `account` especifica la cuenta cuya clave privada estamos usando, `max-fee` especifica la tarifa máxima que se pagará por la transacción. Debería obtener el hash de clase como se ve a continuación:
 
-<img src="./cairo_assets/declare.png" alt="declaring your contract">
+<img src="./cairo_assets/declare1.png" alt="declaring your contract">
 
 ## Implementación de contratos
 Después de obtener nuestro hash de clase de la declaración, ahora podemos implementar usando el siguiente comando:
@@ -76,7 +76,7 @@ protostar deploy 0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f201754
 ```
 
 donde `0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc` es el hash de clase de nuestro contrato.
-<img src="./cairo_assets/deploy.png" alt="deploying your contract">
+<img src="./cairo_assets/deploy1.png" alt="deploying your contract">
 
 ## Interecatuando con Contratos
 Para interactuar con su contrato implementado, usaremos Argent X (alternativa - Braavos) y Starkscan (alternativa - Voyager). Para instalar y configurar Argent X, consulte esta [guía](https://www.argent.xyz/learn/how-to-create-an-argent-x-wallet/).
