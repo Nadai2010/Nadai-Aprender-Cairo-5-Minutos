@@ -1,123 +1,106 @@
 # Cairo
-Cairo es el idioma nativo de StarkNet y el primer lenguaje completo de Turing para crear scripts de programas comprobables (donde una parte puede probar a otra que cierto cálculo se ejecutó correctamente) para cálculos generales.
-
+Cairo is StarkNet's native language and the first Turing-complete language for scripting provable programs (where one party can prove to another that a certain computation was executed correctly) for general computations.
 # StarkNet
-StarkNet es un ZK-rollup descentralizado que funciona como una cadena de capa 2 de Ethereum. StarkNet permite que las aplicaciones descentralizadas alcancen una escala ilimitada para su cálculo - sin comprometer la descentralización y la seguridad de Ethereum, resolviendo así el trilema de escalabilidad.
+StarkNet is a decentralized ZK-rollup that operates as an Ethereum layer 2 chain. StarkNet enables Decentralized applications to achieve unlimited scale for their computation - without compromising Ethereum's decentralization and security, thereby solving the Scalability Trilemma.
 
-En este documento, profundizaremos en la comprensión de la sintaxis de Cairo y cómo podría crear e implementar un contrato inteligente de Cairo en StarkNet.
+In this document, we are going to be going in-depth into understanding Cairo's syntax and how you could create and deploy a Cairo smart contract on StarkNet.
 
-**NB: Al momento de escribir este artículo, StarkNet todavía está en v0.10.3, y Cairo 1.0 llegará pronto. El ecosistema es joven y evoluciona muy rápido, por lo que es posible que desee consultar los [documentos oficiales](https://www.cairo-lang.org/docs) para confirmar que este documento aún está actualizado. ¡Las solicitudes de extracción son bienvenidas!**
+**NB: As at the time of this writing, StarkNet is still at v0.10.3, with Cairo 1.0 coming soon. The ecosystem is young and evolving very fast, so you might want to check the [official docs](https://www.cairo-lang.org/docs) to confirm this document is still up-to-date. Pull requests are welcome!**
 
----
+# Setting Up A Development Environment
+Before we get started writing codes, we will need to setup a Cairo development environment, for writing, compiling and deploying our contracts to StarkNet. 
+For the purpose of this tutorial we are going to be using the [Protostar Framework](https://github.com/software-mansion/protostar). Installation steps can be found in the docs [here](https://docs.swmansion.com/protostar/docs/tutorials/installation).
+Note that Protostar supports just Mac and Linux OS, Windows users might need to use WSL, or go for other alternatives such as the Official [StarkNet CLI](https://www.cairo-lang.org/docs/quickstart.html) or [Nile from Openzeppelin](https://github.com/OpenZeppelin/nile)
 
-# Configuración de un entorno de desarrollo
-Antes de comenzar a escribir códigos, necesitaremos configurar un entorno de desarrollo de Cairo para escribir, compilar e implementar nuestros contratos en StarkNet.
+Once you're done with the installations, run the command `protostar -v` to confirm your installation was successful. If successful, you should see your Protostar version displayed on the screen. 
 
-A los efectos de este tutorial, utilizaremos [Protostar Framework](https://github.com/software-mansion/protostar). Los pasos de instalación se pueden encontrar en los documentos [aquí](https://docs.swmansion.com/protostar/docs/tutorials/installation).
-Tenga en cuenta que Protostar es compatible solo con los sistemas operativos Mac y Linux, es posible que los usuarios de Windows necesiten usar WSL o buscar otras alternativas, como la [CLI oficial de StarkNet](https://www.cairo-lang.org/docs/quickstart.html) o [Nile de Openzeppelin](https://github.com/OpenZeppelin/nile)
-
-Una vez que haya terminado con las instalaciones, ejecute el comando `protostar -v` para confirmar que su instalación fue exitosa. Si tiene éxito, debería ver su versión de Protostar en la pantalla.
-
-## Inicializando un nuevo proyecto
-Protostar, similar a Truffle para el desarrollo de solidez, puede instalarse una vez y usarse para múltiples proyectos.
-Para inicializar un nuevo proyecto Protostar, ejecute el siguiente comando:
-
+## Initializing a new project
+Protostar similar to Truffle for solidity development can be installed once and used for multiple projects.
+To initialize a new Protostar project, run the following command:
 ```
 protostar init
 ```
 
-2. Luego solicitaría el nombre del proyecto y el nombre del directorio de la biblioteca, deberá completar esto y un nuevo proyecto se inicializará con éxito.
+2. It would then request the project's name and the library's directory name, you'd need to fill in this, and a new project will be initialized successfully.
 
----
+# Compiling, Declaring, Deploying And Interacting With StarkNet Contracts
+For the purpose of this tutorial, head over to this [github repo](https://github.com/Darlington02/CairoLearnXinYminutes) and clone locally.
 
-# Compilar, declarar, implementar e interactuar con contratos de StarkNet
-A los fines de este tutorial, diríjase y clone localmente.
+Within the `src` folder you'll find a boilerplate contract that comes with initializing a new Protostar project, `main.cairo`. We are going to be compiling, declaring and deploying this contract.
 
-* [Repositorio Oficial Inglés Darlington02](https://github.com/Darlington02/CairoLearnXinYminutes)
-* [Repositorio Oficial Español Nadai2010](https://github.com/Nadai2010/Nadai-Aprender-Cairo-5-Minutos) 
-
-Dentro de la carpeta `src` encontrará un contrato repetitivo que viene con la inicialización de un nuevo proyecto Protostar, `main.cairo`. Vamos a compilar, declarar y desplegar este contrato.
-
-
-## Compilación de contratos
-Para compilar un contrato de Cairo usando Protostar, asegúrese de especificar una ruta al contrato en la sección `[contracts]` del archivo `protostar.toml`. Una vez que hayas hecho eso, abre tu terminal y ejecuta el comando:
-
+## Compiling Contracts
+To compile a Cairo contract using Protostar, ensure a path to the contract is specified in the `[contracts]` section of the `protostar.toml` file. Once you've done that, open your terminal and run the command:
 ```
 protostar build
 ```
-
-Y debería obtener un resultado similar al que ve a continuación, con archivos `main.json` y `main_abi.json` creados en la carpeta `build`.
-
+And you should get an output similar to what you see below, with a `main.json` and `main_abi.json` files created in the `build` folder.
 <img src="./cairo_assets/build.png" alt="building your contract">
 
-## Declaración de contratos
-Con la reciente actualización de StarkNet a 0.10.3, la transacción DEPLOY quedó obsoleta y ya no funciona. Para implementar una transacción, primero debe declarar un contrato para obtener el hash de clase, luego implementar el contrato declarado utilizando el [Contrato de implementación universal](https://community.starknet.io/t/universal-deployer-contract-proposal/1864).
+## Declaring Contracts
+With the recent StarkNet update to 0.10.3, the DEPLOY transaction was deprecated and no longer works. To deploy a transaction, you must first declare a Contract to obtain the class hash, then deploy the declared contract using the [Universal Deployer Contract](https://community.starknet.io/t/universal-deployer-contract-proposal/1864).
 
-Antes de declarar o implementar su contrato usando Protostar, debe configurar la clave privada asociada con la dirección de cuenta especificada en un archivo o en la terminal. Para configurar su clave privada en la terminal, ejecute el comando:
+Before declaring or deploying your contract using Protostar, you should set the private key associated with the specified account address in a file, or in the terminal. To set your private key in the terminal, run the command:
 
 ```
 export PROTOSTAR_ACCOUNT_PRIVATE_KEY=[YOUR PRIVATE KEY HERE]
 ```
 
-Luego, para declarar nuestro contrato usando Protostar, ejecute el siguiente comando:
+Then to declare our contract using Protostar run the following command:
 ```
-protostar declare ./build/main.json --network testnet --account 0x03F878C94De81906ba1A016aB0E228D361753536681a776ddA29674FfeBB3CB0 --max-fee auto
+protostar declare ./build/main.json --network testnet --account 0x0691622bBFD29e835bA4004e7425A4e9630840EbD11c5269DE51C16774585b16 --max-fee auto
 ```
 
-Donde `network` especifica la red en la que estamos implementando, `account` especifica la cuenta cuya clave privada estamos usando, `max-fee` especifica la tarifa máxima que se pagará por la transacción. Debería obtener el hash de clase como se ve a continuación:
-
+where `network` specifies the network we are deploying to, `account` specifies account whose private key we are using, `max-fee` specifies the maximum fee to be paid for the transaction. You should get the class hash outputted as seen below:
 <img src="./cairo_assets/declare.png" alt="declaring your contract">
 
-## Implementación de contratos
-Después de obtener nuestro hash de clase de la declaración, ahora podemos implementar usando el siguiente comando:
-
+## Deploying Contracts
+After obtaining our class hash from declaring, we can now deploy using the below command:
 ```
-protostar deploy 0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc --network testnet --account 0x03F878C94De81906ba1A016aB0E228D361753536681a776ddA29674FfeBB3CB0 --max-fee auto
+protostar deploy 0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc --network testnet --account 0x0691622bBFD29e835bA4004e7425A4e9630840EbD11c5269DE51C16774585b16 --max-fee auto
 ```
 
-donde `0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc` es el hash de clase de nuestro contrato.
+where `0x02a5de1b145e18dfeb31c7cd7ff403714ededf5f3fdf75f8b0ac96f2017541bc` is the class hash of our contract.
 <img src="./cairo_assets/deploy.png" alt="deploying your contract">
 
-## Interecatuando con Contratos
-Para interactuar con su contrato implementado, usaremos Argent X (alternativa - Braavos) y Starkscan (alternativa - Voyager). Para instalar y configurar Argent X, consulte esta [guía](https://www.argent.xyz/learn/how-to-create-an-argent-x-wallet/).
+## Interacting With Contracts
+To interact with your deployed contract, we will be using Argent X (alternative - Braavos), and Starkscan (alternative - Voyager). To install and setup Argent X, check out this [guide](https://www.argent.xyz/learn/how-to-create-an-argent-x-wallet/).
 
-Copie la dirección de su contrato, que se muestra en la pantalla del paso anterior, y diríjase a [Starkscan](https://testnet.starkscan.co/) para buscar el contrato. Una vez encontrado, puede realizar llamadas de escritura al contrato siguiendo los pasos a continuación:
-
-1. Haga clic en el botón "conectar billetera"
+Copy your contract address, displayed on screen from the previous step, and head over to [Starkscan](https://testnet.starkscan.co/) to search for the contract. Once found, you can make write calls to the contract by following the steps below:
+1. Click on the "connect wallet" button
 <img src="./cairo_assets/connect.png" alt="connect wallet">
-2. Seleccione Argent X y apruebe la conexión
+2. Select Argent X and approve the connection
 <img src="./cairo_assets/connect2.png" alt="connect to argentX">
-3. Ahora puede realizar llamadas de lectura y escritura fácilmente.
+3. You can now make read and write calls easily.
 
-# Aprendamos Cairo
+# Let's learn Cairo
 ```
-    // Primero, veamos un contrato predeterminado que viene con Protostar
-    // Le permite establecer el saldo en la implementación, aumentar y obtener el saldo.
+    // First let's look at a default contract that comes with Protostar
+    // Allows you to set balanace on deployment, increase, and get the balance.
 
-    // Directiva de idioma - indica al compilador que es un contrato de StarkNet
+    // Language directive - instructs compiler its a StarkNet contract
     %lang starknet
 
-    // Importaciones de la biblioteca desde la biblioteca Cairo-lang.
+    // Library imports from the Cairo-lang library
     from starkware.cairo.common.math import assert_nn
     from starkware.cairo.common.cairo_builtins import HashBuiltin
 
-    // @dev Storage Variable que almacena el saldo de un usuario.
-    // @storage_var es un decorador que indica al compilador que la función debajo es una variable de almacenamiento.
+    // @dev Storage variable that stores the balance of a user. 
+    // @storage_var is a decorator that instructs the compiler the function below it is a storage variable.
     @storage_var
     func balance() -> (res: felt) {
     }
 
-    // @dev Constructor escribe la variable de saldo en 0 en la implementación.
-    // Los constructores establecen las variables de almacenamiento en la implementación. Puede aceptar argumentos también.
+    // @dev Constructor writes the balance variable to 0 on deployment
+    // Constructors sets storage variables on deployment. Can accept arguments too.
     @constructor
     func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
         balance.write(0);
         return ();
     }
 
-    // @dev increase_balance actualiza la variable de saldo.
-    // @param amount es la cantidad que desea agregar al saldo.
-    // @external es un decorador que especifica la función debajo de ella, es una función externa.
+    // @dev increase_balance updates the balance variable
+    // @param amount the amount you want to add to balance
+    // @external is a decorator that specifies the func below it is an external function.
     @external
     func increase_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         amount: felt
@@ -131,75 +114,72 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
         return ();
     }
 
-    // @dev returns la variable de saldo.
-    // @view es un decorador que especifica la función debajo de ella es una función de vista.
+    // @dev returns the balance variable
+    // @view is a decorator that specifies the func below it is a view function. 
     @view
     func get_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
         let (res) = balance.read();
         return (res,);
     }
 
-    // Antes de continuar, intente construir, implementar e interactuar con este contrato.
-    // NB: Debería estar en main.cairo si está usando Protostar.
+    // before proceeding, try to build, deploy and interact with this contract! 
+    // NB: Should be at main.cairo if you are using Protostar.
 
 ```
-**Ahora a las lecciones principales**
+Now unto the main lessons
 
-### 1. EL TIPO DE DATOS FELT
+### 1. THE FELT DATA TYPE
 ```
-    // A diferencia de solidity, donde tiene acceso a varios tipos de datos, Cairo viene con un solo tipo de datos...felts
-    // Felts significa elementos de campo y son un número entero de 252 bits en el rango 0<=x<=P donde P es un número primo.
-    // Puede crear un Uint256 en El Cairo utilizando una estructura de dos felts de 128 bits.
+    // Unlike solidity, where you have access to various data types, Cairo comes with just a single data type..felts
+    // Felts stands for Field elements, and are a 252 bit integer in the range 0<=x<=P where P is a prime number.
+    // You can create a Uint256 in Cairo by utlizing a struct of two 128 bits felts.
 
     struct Uint256 {
-        low: felt, // Los 128 bits bajos del valor.
-        high: felt, // Los 128 bits altos del valor.
+        low: felt, // The low 128 bits of the value.
+        high: felt, // The high 128 bits of the value.
     }
 
-    // Para evitar tener problemas con las divisiones, es más seguro trabajar con el método unsigned_div_rem de la biblioteca 
-    de Cairo-lang.
+    // To avoid running into issues with divisions, it's safer to work with the unsigned_div_rem method from Cairo-lang's library.
 ```
 
-### 2. DIRECTIVA LANG E IMPORTACIONES
+### 2. LANG DIRECTIVE AND IMPORTS
 ```
-    // Para comenzar a escribir un contrato StarkNet, debe especificar la directiva:
+    // To get started with writing a StarkNet contract, you must specify the directive:
 
     %lang starknet
 
-    // Esta directiva le informa al compilador que está escribiendo un contrato y no un programa.
-    // La diferencia entre ambos es que los contratos tienen acceso al almacenamiento de StarkNet, los programas no y, como tales, 
-    no tienen estado.
+    // This directive informs the compiler you are writing a contract and not a program. 
+    // The difference between both is contracts have access to StarkNet's storage, programs don't and as such are stateless.
 
-    // Hay funciones importantes que puede necesitar importar desde la biblioteca oficial de Cairo-lang o de Openzeppelin. p.ej.
+    // There are important functions you might need to import from the official Cairo-lang library or Openzeppelin's. e.g.
+    
     from starkware.cairo.common.cairo_builtins import HashBuiltin
     from cairo_contracts.src.openzeppelin.token.erc20.library import ERC20
     from starkware.cairo.common.uint256 import Uint256
     from starkware.cairo.common.bool import TRUE
 ```
 
-### 3.ESTRUCTURAS DE DATOS
+### 3. DATA STRUCTURES
 ```
-     // A. STORAGE VARIABLES O VARIABLES DE ALMACENAMIENTO
-     // El almacenamiento de Cairo es un mapa con 2^251 ranuras, donde cada ranura es un felt que se inicializa en 0.
-     // Creas uno usando el decorador @storage_var
+    // A. STORAGE VARIABLES
+    // Cairo's storage is a map with 2^251 slots, where each slot is a felt which is initialized to 0.
+    // You create one using the @storage_var decorator
 
         @storage_var
         func names() -> (name: felt){
         }
 
-    // B. STORAGE MAPPINGS O MAPAS DE ALMACENAMIENTO
-    // A diferencia de solidity, donde las asignaciones tienen una palabra clave separada, en Cairo crea asignaciones utilizando 
-    // variables de almacenamiento.
+    // B. STORAGE MAPPINGS
+    // Unlike soldity where mappings have a separate keyword, in Cairo you create mappings using storage variables.
 
         @storage_var
         func names(address: felt) -> (name: felt){
         }
 
-    // C. STRUCTS O ESTRUCTURAS
-    // Las estructuras son un medio para crear tipos de datos personalizados en Cairo.
-    // Una Struct tiene un tamaño, que es la suma de los tamaños de sus miembros. El tamaño se puede recuperar usando 
-    // MyStruct.SIZE.
-    // Creas una estructura en Cairo usando la palabra clave `struct`.
+    // C. STRUCTS
+    // Structs are a means to create custom data types in Cairo.
+    // A Struct has a size, which is the sum of the sizes of its members. The size can be retrieved using MyStruct.SIZE.
+    // You create a struct in Cairo using the `struct` keyword.
 
         struct Person {
             name: felt,
@@ -207,27 +187,26 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
             address: felt,
         }
 
-    // D. CONSTANTS O CONSTANTES
-    // Las constantes son fijas y, como tales, no se pueden modificar después de configurarlas.
-    // Se evalúan como un número entero (field element) en tiempo de compilación.
-    // Para crear una constante en Cairo, usa la palabra clave `const`.
-    // Es una práctica adecuada poner en mayúscula los nombres constantes.
+    // D. CONSTANTS
+    // Constants are fixed and as such can't be altered after being set.
+    // They evaluate to an integer (field element) at compile time.
+    // To create a constant in Cairo, you use the `const` keyword.
+    // Its proper practice to capitalize constant names.
 
         const USER = 0x01C6cfC1DB2ae90dACEA243F0a8C2F4e32560F7cDD398e4dA2Cc56B733774E9b
 
     // E. ARRAYS
-    // Los arrays se pueden definir como un puntero (felt*) al primer elemento del arreglo.
-    // A medida que se llena una matriz, sus elementos ocupan celdas de memoria contiguas.
-    // La palabra clave `alloc` se puede usar para asignar dinámicamente un nuevo segmento de memoria, que se puede usar para 
-    almacenar una matriz.
+    // Arrays can be defined as a pointer(felt*) to the first element of the array.
+    // As an array is populated, its elements take up contigous memory cells.
+    // The `alloc` keyword can be used to dynamically allocate a new memory segment, which can be used to store an array
 
         let (myArray: felt*) = alloc ();
         assert myArray[0] = 1;
         assert myArray[1] = 2;
         assert myArray[3] = 3;
 
-    // También puede usar el operador `new` para crear arreglos de tamaño fijo usando tuplas.
-    // El operador new es útil ya que le permite asignar memoria e inicializar el objeto en una sola instrucción.
+    // You can also use the `new` operator to create fixed-size arrays using tuples
+    // The new operator is useful as it enables you allocate memory and initialize the object in one instruction
 
         func foo() {
             tempvar arr: felt* = new (1, 1, 2, 3, 5);
@@ -235,32 +214,31 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
             return ();
         }
 
-    // F. TUPLES O TUPLAS
-    // Una tupla es una lista finita, ordenada e inalterable de elementos.
-    // Se representa como una lista de elementos separados por comas entre paréntesis.
-    // Sus elementos pueden ser de cualquier combinación de tipos válidos.
+    // F. TUPLES
+    // A tuple is a finite, ordered, unchangeable list of elements
+    // It is represented as a comma-separated list of elements enclosed by parentheses
+    // Their elements may be of any combination of valid types.
 
         local tuple0: (felt, felt, felt) = (7, 9, 13);
 
-    // G. EVENTS O EVENTOS
-    // Eventos permite que un contrato emita información durante el curso de su ejecución, que puede ser utilizada fuera de 
-    // StarkNet.
-    // Para crear un evento:
+    // G. EVENTS
+    // Events allows a contract emit information during the course of its execution, that can be used outside of StarkNet.
+    // To create an event:
 
         @event
         func name_stored(address, name) {
         }
 
-    // Para emitir un evento:
+    // To emit an event:
 
         name_stored.emit(address, name);
 ```
 
-### 4. CONSTRUCTORES, FUNCIONES EXTERNAS Y DE VISTA
+### 4. CONSTRUCTORS, EXTERNAL AND VIEW FUNCTIONS
 ```
-    // A. CONSTRUCTORS O CONSTRUCTORES 
-    // Los constructores son una forma de inicializar las variables de estado en la implementación del contrato 
-    // Se crea un constructor usando el decorador @constructor
+    // A. CONSTRUCTORS
+    // Constructors are a way to intialize state variables on contract deployment
+    // You create a constructor using the @constructor decorator
 
         @constructor
         func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(_name: felt) {
@@ -269,9 +247,9 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
             return ();
         }
     
-    // B. EXTERNAL FUNCTIONS O FUNCIONES EXTERNAS
-    // Las funciones externas son funciones que modifican el estado de la red.
-    // Creas una función externa usando el decorador @external
+    // B. EXTERNAL FUNCTIONS
+    // External functions are functions that modifies the state of the network
+    // You create an external function using the @external decorator
 
         @external
         func store_name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(_name: felt){
@@ -281,9 +259,9 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
             return ();
         }
 
-    // C. VIEW FUNCTIONS O VER FUNCIONES
-    // Las funciones de visualización no modifican el estado de la cadena de bloques
-    // Puedes crear una función de vista usando el decorador @view
+    // C. VIEW FUNCTIONS
+    // View functions do not modify the state of the blockchain
+    // You can create a view function using the @view decorator
 
         @view
         func get_name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(_address: felt) -> (name: felt){
@@ -291,54 +269,53 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
             return (name,);
         }
 
-    // NB: A diferencia de Solidity, Cairo admite solo los tipos de función Externa y Vista.
-    // Alternativamente, también puede crear una función interna al no agregar ningún decorador a la función.
+    // NB: Unlike Solidity, Cairo supports just External and View function types. 
+    // You can alternatively also create an internal function by not adding any decorator to the function.
 ```
 
-### 5. DECORATORS O DECORADORES
+### 5. DECORATORS
 ```
-    // Todas las funciones en Cairo se especifican con la palabra clave `func`, lo que puede resultar confuso.
-    // El compilador utiliza los decoradores para distinguir entre estas funciones.
+    // All functions in Cairo are specified by the `func` keyword, which can be confusing.
+    // Decorators are used by the compiler to distinguish between these functions.
 
-    // Aquí están los decoradores más comunes que encontrarás en El Cairo:
+    // Here are the most common decorators you'll encounter in Cairo:
 
-    // 1. @storage_var — Se utiliza para especificar variables de estado.
-    // 2. @constructor — Se utiliza para especificar constructores.
-    // 3. @external — Se utiliza para especificar funciones que escriben en una variable de estado.
-    // 4. @event — Utilizado para especificar eventos.
-    // 5. @view — Se utiliza para especificar funciones que se leen de una variable de estado.
-    // 6. @l1_handler — Se utiliza para especificar funciones que procesan mensajes enviados desde un contrato L1 a un puente de 
-    mensajería.
+    // 1. @storage_var — used for specifying state variables.
+    // 2. @constructor — used for specifying constructors.
+    // 3. @external — used for specifying functions that write to a state variable.
+    // 4. @event — used for specifying events
+    // 5. @view — used for specifying functions that reads from a state variable.
+    // 6. @l1_handler — used for specifying functions that processes message sent from an L1 contract in a messaging bridge.
 ```
 
-### 6. CONSTRUCCIONES, CONSEJOS Y ARGUMENTOS IMPLÍCITOS
+### 6. BUILTINS, HINTS & IMPLICIT ARGUMENTS
 ```
-    // A. BUILTINS O CONSTRUCCIONES
-    // Los componentes integrados son unidades de ejecución de bajo nivel optimizadas predefinidas, que se agregan a la placa de la CPU de Cairo.
-    // Ayudan a realizar cálculos predefinidos como hash de Pedersen, operaciones bit a bit, etc., que son costosos de realizar en Vanilla Cairo.
-    // A cada componente integrado en Cairo se le asigna una ubicación de memoria separada, accesible a través de llamadas de memoria regulares de Cairo utilizando parámetros implícitos.
-    // Los especificas usando la directiva %builtins
+    // A. BUILTINS
+    // Builtins are predefined optimized low-level execution units, which are added to Cairo’s CPU board.
+    // They help perform predefined computations like pedersen hashing, bitwise operations etc, which are expensive to perform in Vanilla Cairo.
+    // Each builtin in Cairo, is assigned a separate memory location, accessible through regular Cairo memory calls using implicit parameters.
+    // You specify them using the %builtins directive
 
-    // Aquí hay una lista de componentes disponibles en El Cairo:
-    // 1. output — la salida incorporada se usa para escribir salidas del programa
-    // 2. pedersen — el incorporado pedersen se usa para los cálculos hash de pedersen
-    // 3. range_check — Esta función incorporada se usa principalmente para comparaciones de enteros y facilita la verificación para confirmar que un elemento de campo está dentro de un rango [0, 2^128)
-    // 4. ecdsa — el ecdsa incorporado se usa para verificar las firmas ECDSA
-    // 5. bitwise — la función bit a bit se usa para realizar operaciones bit a bit en felts.
+    // Here is a list of available builtins in Cairo:
+    // 1. output — the output builtin is used for writing program outputs
+    // 2. pedersen — the pedersen builtin is used for pedersen hashing computations
+    // 3. range_check — This builtin is mostly used for integer comparisons, and facilitates check to confirm that a field element is within a range [0, 2^128)
+    // 4. ecdsa — the ecdsa builtin is used for verifying ECDSA signatures
+    // 5. bitwise — the bitwise builtin is used for carrying out bitwise operations on felts
 
-    // B. HINTS O PISTAS-CONSEJOS
-    // Hints son piezas de códigos de Python, que contienen instrucciones que solo el probador ve y ejecuta
-    // Desde el punto de vista del verificador estas pistas no existen
-    // Para especificar una pista en Cairo, debe encapsularla dentro de %{ and%}
-    // Es una buena práctica evitar el uso de sugerencias tanto como pueda en sus contratos, ya que las sugerencias no se agregan al código de bytes y, por lo tanto, no cuentan en el número total de pasos de ejecución.
-    
+    // B. HINTS
+    // Hints are pieces of Python codes, which contains instructions that only the prover sees and executes
+    // From the point of view of the verifier these hints do not exist
+    // To specify a hint in Cairo, you need to encapsulate it within %{ and%}
+    // Its good practice to avoid using hints as much as you can in your contracts, as hints are not added to the bytecode, and thus do not count in the total number of execution steps.
+
         %{ 
             # Python hint goes here 
         %}
 
-    // C. IMPLICIT ARGUMENTS O ARGUMENTOS IMPLÍCITOS
-    // Los argumentos implícitos no están restringidos al cuerpo de la función, pero pueden ser heredados por otras funciones que los requieran.
-    // Los argumentos implícitos se pasan entre brazaletes rizados, como se puede ver a continuación:
+    // C. IMPLICIT ARGUMENTS
+    // Implicit arguments are not restrcited to the function body, but can be inherited by other functions calls that require them.
+    // Implicit arguments are passed in between curly bracelets, like you can see below:
 
         func store_name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(_name: felt){
             let (caller) = get_caller_address();
@@ -348,72 +325,72 @@ Copie la dirección de su contrato, que se muestra en la pantalla del paso anter
         }
 ```
 
-### 7. MENSAJES DE ERROR Y CONTROLES DE ACCESO
+### 7. ERROR MESSAGES & ACCESS CONTROLS
 ```
-     / Puede crear errores personalizados en Cairo que se envían al usuario en caso de ejecución fallida.
-    // Esto puede ser muy útil para implementar controles y mecanismos de control de acceso adecuados.
-    // Un ejemplo es evitar que un usuario llame a una función excepto que el usuario sea administrador.
+    // You can create custom errors in Cairo which is outputted to the user upon failed execution.
+    // This can be very useful for implementing checks and proper access control mechanisms.
+    // An example is preventing a user to call a function except user is admin.
 
-    // importaciones
+    // imports
     from starkware.starknet.common.syscalls import get_caller_address
 
-    // crear una constante de administrador
+    // create an admin constant
     const ADMIN = 0x01C6cfC1DB2ae90dACEA243F0a8C2F4e32560F7cDD398e4dA2Cc56B733774E9b
 
-    // implementar control de acceso
+    // implement access control
     with_attr error_message("You do not have access to make this action!"){
         let (caller) = get_caller_address();
         assert ADMIN = caller;
     }
 
-    //el uso de una declaración de afirmación arroja si la condición no es verdadera, devolviendo así el error especificado.
+    // using an assert statement throws if condition is not true, thus returning the specified error.
 ```
 
-### 8. INTERFACES DE CONTRATO
-```
-
-```
-
-### 9. RECURSIÓN
+### 8. CONTRACT INTERFACES
 ```
 
 ```
 
-Algunas cosas de bajo nivel
-
-### 10. REGISTROS
+### 9. RECURSIONS
 ```
 
 ```
 
-### 11. REFERENCIAS REVOCADAS
+Some low-level stuffs
+
+### 10. REGISTERS
+```
+
+```
+
+### 11. REVOKED REFERENCES
 ```
 
 ```
 
 Miscellaneous
 
-### 12. Entendiendo las puntuaciones de El Cairo
+### 12. Understanding Cairo's punctuations
 ```
-    // ; (semicoma). Se utiliza al final de cada instrucción.
+    // ; (semicolon). Used at the end of each instruction
 
-    // ( ) (paréntesis). Se usa en una declaración de función, declaraciones if y en una declaración de tupla.
+    // ( ) (parentheses). Used in a function declaration, if statements, and in a tuple declaration
 
-    // { } (corchetes). Se utiliza en una declaración de argumentos implícitos y para definir bloques de código.
+    // { } (curly brackets). Used in a declaration of implicit arguments and to define code blocks.
 
-    // [ ] (corchetes). Los corchetes independientes representan el valor en una ubicación de dirección particular (como el puntero de asignación, [ap]). Los corchetes que siguen a un puntero o una tupla actúan como un operador de subíndice, donde x[2] representa el elemento con índice 2 en x.
+    // [ ] (square brackets). Standalone brackets represent the value at a particular address location (such as the allocation pointer, [ap]). Brackets following a pointer or a tuple act as a subscript operator, where x[2] represents the element with index 2 in x.
 
-    // * Asterisco único. Hace referencia al puntero de una expresión.
+    // * Single asterisk. Refers to the pointer of an expression.
 
-    // % Signo de porcentaje. Aparece al comienzo de una directiva, como %builtins or %lang.
+    // % Percent sign. Appears at the start of a directive, such as %builtins or %lang.
 
-    // %{ %} Representa sugerencias de Python.
+    // %{ %} Represents Python hints.
 
-    // _ (underscore). Un marcador de posición para manejar valores que no se utilizan, como un valor de retorno de función no utilizado.
+    // _ (underscore). A placeholder to handle values that are not used, such as an unused function return value.
 ```
 
-# EJEMPLO DE CONTRATO COMPLETO
-A continuación se muestra un ejemplo de contrato completo que implementa la mayor parte de lo que acabamos de aprender. ¡Reescribe, implementa, diviértete!
+# FULL CONTRACT EXAMPLE
+Below is a full contract example that implements most of what we just learnt! Re-write, deploy, have fun!
 ```
 
 ```
