@@ -2,9 +2,8 @@
 language: Cairo
 filename: learnCairo.sol
 contributors:
-  - [["Darlington Nnam", "https://github.com/Darlington02"]]
-
-  - ["Nadai Traducción y Guías Internas","https://github.com/Nadai2010/CairoLearnXinYminutes" ]
+  - ["Darlington Nnam", "https://github.com/Darlington02"]
+- ["Nadai Traducción y Guías Internas","https://github.com/Nadai2010/CairoLearnXinYminutes" ]
 ---
 
 # Cairo
