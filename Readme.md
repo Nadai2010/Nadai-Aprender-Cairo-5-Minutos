@@ -445,8 +445,8 @@ Para resolver las referencias revocadas, en casos simples puede resolver este pr
 * `%` (signo de porcentaje. Aparece al comienzo de una directiva, como %builtins or %lang.
 * `%{` y  `%}` representa sugerencias de Python.
 * `_` (guión bajo). Un marcador de posición para manejar valores que no se utilizan, como un valor de retorno de función no utilizado.
-```
 
+```cairo
 # EJEMPLO DE CONTRATO COMPLETO
 A continuación se muestra un ejemplo de contrato completo que implementa la mayor parte de lo que acabamos de aprender. ¡Reescribe, implementa, diviértete!
 
